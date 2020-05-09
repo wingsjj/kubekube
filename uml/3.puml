@@ -1,0 +1,45 @@
+@startuml 类图
+skinparam classAttributeIconSize 0
+class FTPClient {
+ -port
+ -host
+ -username
+ -passwd
+
+ +download_file(file, dir)
+ +upload_file(file, dest)
+}
+
+class MQTTClient {
+ -msg_queue
+ -handlers
+ -username
+ -passwd
+
+ +publish(topic, payload)
+ +subcribe(topic)
+}
+
+class KubeClient {
+ -ftp_client:FTPClient
+ -mqtt_client:MQTTClient
+ -sub
+
+ -_on(action, callback)
+ -_pub(action, payload)
+ +req_model()
+ +req_param()
+ +
+}
+
+class KubeServer {
+ -msg_queue
+ -handlers
+ -username
+ -passwd
+
+ +publish(topic, payload)
+ +subcribe(topic)
+}
+
+@enduml

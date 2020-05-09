@@ -1,0 +1,21 @@
+@startuml 云端下发模型
+title 云端下发模型时序图
+activate 云端调用接口
+activate KubeServer
+云端调用接口 -> KubeServer : apply_model(model_name)
+KubeServer -> FTPServer : upload(model_name, cloud_dir)
+activate FTPServer
+FTPServer -> KubeServer: 
+KubeServer -> MQTTBroker : apply_model(cloud_dir, model_name)
+activate MQTTBroker
+deactivate KubeServer
+MQTTBroker -> KubeClient: apply_model(cloud_dir, model_name)
+activate KubeClient
+deactivate MQTTBroker
+KubeClient -> FTPServer: download(cloud_dir, model_name, model_dir)
+FTPServer ->  KubeClient: 
+deactivate FTPServer
+KubeClient -> 边缘端调用接口:  on_apply_model(model_dir, model_name)
+deactivate KubeClient
+
+@endumla

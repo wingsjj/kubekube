@@ -1,0 +1,21 @@
+@startuml 边缘上传模型
+title 边缘上传模型时序图
+activate 边缘端算法
+activate KubeClient
+边缘端算法 -> KubeClient :  upload_model(model_name)
+KubeClient -> FTPServer : upload(model_name, cloud_dir)
+activate FTPServer
+FTPServer -> KubeClient: 
+KubeClient -> MQTTBroker : upload_model(cloud_dir, model_name)
+activate MQTTBroker
+deactivate KubeClient
+MQTTBroker -> KubeServer: upload_model(cloud_dir, model_name)
+activate KubeServer
+deactivate MQTTBroker
+KubeServer -> FTPServer: download(cloud_dir, model_name, model_dir)
+FTPServer ->  KubeServer: 
+deactivate FTPServer
+KubeServer -> 云端算法: on_upload_model(model_dir, model_name)
+deactivate KubeServer
+
+@endumla
