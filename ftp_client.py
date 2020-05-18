@@ -3,13 +3,14 @@ import ftplib
 import os
 import logging
 
+
 class FTPClient():
     def __init__(self, host, user='kubeedge', passwd='admin', port=0):
         self.port = port
         self.host = host
         self.user = user
         self.passwd = passwd
-        self.ftp:FTP = None
+        self.ftp: FTP = None
 
     def login(self):
         self.ftp = FTP(self.host, self.user, self.passwd)
@@ -17,7 +18,7 @@ class FTPClient():
     def logout(self):
         self.ftp.quit()
 
-    def download_file(self, path, dest_dir:str):
+    def download_file(self, path, dest_dir: str):
         self.login()
         logging.info(f'start downloading file:{path}')
         arr = path.split('/')
@@ -29,7 +30,7 @@ class FTPClient():
         try:
             dest_file = os.path.join(dest_dir, filename)
             self.ftp.retrbinary(f'RETR {filename}',
-                            open(dest_file, 'wb').write)
+                                open(dest_file, 'wb').write)
         except ftplib.error_perm:
             logging.warning('ERROR: cannot read file "%s"' % filename)
             os.unlink(dest_file)
@@ -38,18 +39,18 @@ class FTPClient():
         self.ftp.cwd('/')
         self.logout()
 
-    def upload_file(self, filename, dest:str):
+    def upload_file(self, filename, dest: str):
         self.login()
         arr = dest.split('/')
         for d in arr[:-1]:
             if d == '': continue
             logging.info(f'enter dir {d}')
             self.chdir(d)
-        
+
         try:
             logging.info(f'start uploading file:{filename}')
             self.ftp.storbinary(f'STOR {arr[-1]}',
-                            open(filename, 'rb'))
+                                open(filename, 'rb'))
 
         except ftplib.error_perm as e:
             logging.warning(e)
@@ -59,7 +60,7 @@ class FTPClient():
         self.ftp.cwd('/')
         self.logout()
 
-    def chdir(self, dir): 
+    def chdir(self, dir):
         if self.directory_exists(dir) is False:
             self.ftp.mkd(dir)
         self.ftp.cwd(dir)
