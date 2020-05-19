@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+// The greeting service definition.
+service Manager {
+    // Sends a greeting
+    rpc AddTask (Task) returns (Reply) {}
+    rpc DeleteTask (Task) returns (Reply) {}
+    rpc QueryTask(Task) returns(Reply) {}
+    rpc UpdateTask(Task) returns(Reply) {}
+}
+
+message Task {
+    int64 id = 1;
+    string name = 2;
+    int64 date = 3;
+    int64 user_id = 4;
+    string content = 5;
+}
+
+message Reply {
+    string id = 1;
+    string status = 2;
+}
