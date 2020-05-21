@@ -3,6 +3,7 @@
 
 ## 运行说明
 先运行 database 文件夹下的 database_server.py 文件
+
 之后运行 kube_server.py 文件
 
 ## 目录结构
