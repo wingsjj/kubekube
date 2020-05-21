@@ -1,12 +1,8 @@
-import ftp_client
 import logging
 import os
-import ftplib
-import json
-import time
-from ws_client import WSClient
-import mqtt_client
-import subprocess
+from client import mqtt_client, ftp_client
+import tasks.task
+import tasks.task_controller
 
 
 class KubeServer:
@@ -16,7 +12,8 @@ class KubeServer:
         self.mqtt_client = mqtt_client.MQTTClient('kube_server')
         self.mqtt_client.connect(host, mqtt_port)
         self.model_path = model_path
-        self.ftp_path = 'C:/Users/SJJ/Downloads/'
+        self.ftp_path = 'C:/Users/SJJ/Downloads'
+        self.task_controller = tasks.task_controller.TaskController()
         self.sub_topics = {
             'model_upload': '/cloud/model/upload/#',
             'param_upload': '/cloud/param/upload/#',
@@ -72,17 +69,24 @@ class KubeServer:
             logging.error(f"train file:{filename} is not existed")
             self._pub('train_info', 'file not exist, please upload')
         dest = '/cloud/{}'.format(filename.split('/')[-1])
-        file = 'C:/Users/SJJ/Downloads/' + dest
-        sub = subprocess.Popen(['python', file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        while sub.poll() is None:
-            line = sub.stdout.readline()
-            line = line.strip()
-            if line:
-                print('Subprogram output: [{}]'.format(line.decode('utf-8')))
-        if sub.returncode == 0:
-            print('Subprogram success')
-        else:
-            print('Subprogram failed')
+        file = self.ftp_path + dest
+        print(file)
+        sub = tasks.task.Task(1, 1, 'python', file)
+        self.task_controller.add_task(sub)
+        output = sub.get_output()
+        for out in output:
+            print(out)
+
+        # print(sub.get_all_output())
+        # while sub.poll() is None:
+        #     line = sub.stdout.readline()
+        #     line = line.strip()
+        #     if line:
+        #         print('Subprogram output: [{}]'.format(line.decode('utf-8')))
+        # if sub.returncode == 0:
+        #     print('Subprogram success')
+        # else:
+        #     print('Subprogram failed')
 
     def apply_model(self, node_name, filename):
         if not os.path.exists(filename):

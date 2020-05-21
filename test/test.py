@@ -1,4 +1,5 @@
-import logging, kube_client
+import logging
+from client import kube_client
 
 logging.basicConfig(level=logging.INFO)
 

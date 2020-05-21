@@ -1,4 +1,4 @@
-from mqtt_client import MQTTClient
+from client.mqtt_client import MQTTClient
 
 c = MQTTClient("test2")
 c.connect("localhost")
