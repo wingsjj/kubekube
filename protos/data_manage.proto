@@ -1,25 +1,37 @@
 syntax = "proto3";
 
+//import "google/protobuf/empty.proto";
+
 // The greeting service definition.
 service Manager {
     // Sends a greeting
-    rpc AddTask (Task) returns (Reply) {}
-    rpc DeleteTask (Task) returns (Reply) {}
-    rpc QueryTask(Task) returns(Reply) {}
-    rpc UpdateTask(Task) returns(Reply) {}
+    rpc AddTask (Task) returns (Reply) {
+    }
+    rpc DeleteTask (Task) returns (Reply) {
+    }
+    rpc QueryTask (Task) returns (Reply) {
+    }
+    rpc UpdateTask (Task) returns (Reply) {
+    }
+    rpc AddTaskLog (TaskLog) returns (Reply) {
+    }
+}
+
+message TaskLog {
+    int64 task_id = 1;
+    string log = 2;
 }
 
 message Task {
-    int64 id = 1;
-    string name = 2;
-    int64 date = 3;
-    int64 user_id = 4;
-    string content = 5;
+    int64 task_id = 1;
+    int64 user_id = 2;
+    string runner = 3;
+    string file = 4;
 }
 
 message Reply {
-    int64 id = 1;
-    string status = 2;
+    int32 code = 1;
+    string message = 2;
 }
 
 //python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./protos/data_manage.proto

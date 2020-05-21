@@ -1,8 +1,7 @@
 import logging
 import os
 from client import mqtt_client, ftp_client
-import tasks.task
-import tasks.task_controller
+import tasks.task_create
 
 
 class KubeServer:
@@ -12,8 +11,8 @@ class KubeServer:
         self.mqtt_client = mqtt_client.MQTTClient('kube_server')
         self.mqtt_client.connect(host, mqtt_port)
         self.model_path = model_path
+        self.create = tasks.task_create.TaskCreate()
         self.ftp_path = 'C:/Users/SJJ/Downloads'
-        self.task_controller = tasks.task_controller.TaskController()
         self.sub_topics = {
             'model_upload': '/cloud/model/upload/#',
             'param_upload': '/cloud/param/upload/#',
@@ -64,18 +63,14 @@ class KubeServer:
 
         self._on('model_train', h)
 
-    def train_model(self, node_name, filename):
+    def train_model(self, node_name: str, user_id: int, filename: str):
         if not os.path.exists(filename):
             logging.error(f"train file:{filename} is not existed")
             self._pub('train_info', 'file not exist, please upload')
         dest = '/cloud/{}'.format(filename.split('/')[-1])
         file = self.ftp_path + dest
         print(file)
-        sub = tasks.task.Task(1, 1, 'python', file)
-        self.task_controller.add_task(sub)
-        output = sub.get_output()
-        for out in output:
-            print(out)
+        self.create.create_task(user_id, file)
 
         # print(sub.get_all_output())
         # while sub.poll() is None:
@@ -109,4 +104,5 @@ if __name__ == "__main__":
     logging.getLogger().setLevel(logging.INFO)
     c = KubeServer()
     c.apply_model("test1", "train.py")
-    c.train_model("test1", "train.py")
+    c.train_model("test1", 1, "train.py")
+    c.train_model("test1", 2, "train.py")
