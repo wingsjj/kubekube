@@ -1,5 +1,11 @@
 # kubekube
 
+
+## 运行说明
+先运行 database 文件夹下的 database_server.py 文件
+之后运行 kube_server.py 文件
+
+## 目录结构
 | 目录 | 说明 |
 | :------: | :------: |
 | client | 客户端 |
@@ -15,6 +21,3 @@
 | kube_server.py | 主服务器端 |
 | train.py | 用于测试的脚本 |
 
-## 运行说明
-先运行 database 文件夹下的 database_server.py 文件
-之后运行 kube_server.py 文件
