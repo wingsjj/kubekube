@@ -105,4 +105,4 @@ if __name__ == "__main__":
     c = KubeServer()
     c.apply_model("test1", "train.py")
     c.train_model("test1", 1, "train.py")
-    c.train_model("test1", 2, "train.py")
+    # c.train_model("test1", 2, "train.py")
